@@ -2,6 +2,7 @@ import './App.css';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import SimpleTable from './components/SimpleTable';
 import ReactWindowTable from './components/ReactWindowTable';
+import InfiniteScrollTable from './components/InfiniteScrollTable';
 
 function App() {
   return (
@@ -19,10 +20,16 @@ function App() {
               <li>
                 <Link to="/react-window">React Window table</Link>
               </li>
+              <li>
+                <Link to="/infinite-scroll">Infinite Scroll table</Link>
+              </li>
             </ul>
           </nav>
 
           <Switch>
+            <Route path="/infinite-scroll">
+              <InfiniteScrollTable />
+            </Route>
             <Route path="/react-window">
               <ReactWindowTable />
             </Route>
