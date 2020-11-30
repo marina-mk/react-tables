@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import faker from 'faker';
 
 const DATA_ROWS__BATCH_COUNT = 10;
@@ -20,7 +20,7 @@ const handleScroll = (tableElement, data, setData) => {
   const scrollPosition = window.pageYOffset + window.innerHeight;
   const tableHeight = tableElement.clientHeight;
 
-  if (tableHeight > scrollPosition && data.length < DATA_ROWS__MAX_COUNT) {
+  if (scrollPosition >= tableHeight && data.length < DATA_ROWS__MAX_COUNT) {
     const batchData = generateData(DATA_ROWS__BATCH_COUNT);
     const updatedData = [...data, ...batchData];
     setData(updatedData);
@@ -32,21 +32,17 @@ const InfiniteScrollTable = () => {
   const tableRef = useRef(null);
 
   useEffect(() => {
-    const maxIterationCount = DATA_ROWS__MAX_COUNT / DATA_ROWS__BATCH_COUNT;
+    const scrollPosition = window.pageYOffset + window.innerHeight;
+    const tableHeight = tableRef.current.clientHeight;
 
-    for (let i = 0; i < maxIterationCount; i++) {
-      const scrollPosition = window.pageYOffset + window.innerHeight;
-      const tableHeight = tableRef.current.clientHeight;
-
-      if (tableHeight < scrollPosition & data.length < DATA_ROWS__MAX_COUNT) {
-        const batchData = generateData(DATA_ROWS__BATCH_COUNT);
-        const initData = [...data, ...batchData];
-        setData(initData);
-      }
+    if (tableHeight < scrollPosition & data.length < DATA_ROWS__MAX_COUNT) {
+      const batchData = generateData(DATA_ROWS__BATCH_COUNT);
+      const initData = [...data, ...batchData];
+      setData(initData);
     }
   }, [data]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const handleScrollBound = handleScroll.bind(null, tableRef.current, data, setData);
     window.addEventListener('scroll', handleScrollBound);
     return () => { window.removeEventListener('scroll', handleScrollBound); };
